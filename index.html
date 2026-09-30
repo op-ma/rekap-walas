@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full text-[14px]">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -16,13 +16,6 @@
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','"AE AlMohanad"','"Noto Sans Arabic"','ui-sans-serif','system-ui','Segoe UI','sans-serif']}}}}</script>
 <style>
 @font-face{font-family:'AE AlMohanad';src:local('AE AlMohanad'),local('ae_AlMohanad'),local('AlMohanad'),url('fonts/ae_almohanad.ttf') format('truetype');font-display:swap;unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF}
-html{font-size:14px}
-html,body{height:100%}
-button,input,textarea,select{font:inherit}
-body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.s2{box-shadow:2px 0 0 #e2e8f0}
-.vt{display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;line-height:1.2}
-input[data-sel]{background:#d1fae5!important;box-shadow:inset 0 0 0 1px #34d399}
 </style>
 <style type="text/tailwindcss">
 @layer components{
@@ -36,14 +29,21 @@ input[data-sel]{background:#d1fae5!important;box-shadow:inset 0 0 0 1px #34d399}
 }
 </style>
 </head>
-<body class="flex h-full flex-col bg-slate-100 font-sans text-sm text-slate-800 antialiased">
-<header class="relative z-40 flex items-center justify-between gap-3 bg-emerald-900 px-3 py-2 text-white shadow">
-  <div class="flex items-center gap-2.5">
-    <img src="icon-192.png" alt="" class="h-7 w-7 rounded-lg">
-    <h1 class="text-sm font-bold tracking-tight">Rekap Nilai Wali Kelas</h1>
+<body class="flex h-full flex-col bg-slate-100 pb-[env(safe-area-inset-bottom,0px)] pt-[env(safe-area-inset-top,0px)] font-sans text-sm text-slate-800 antialiased">
+<header class="relative z-40 flex items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-700 px-3 py-2.5 text-white shadow-lg shadow-emerald-950/20 sm:px-4">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+    <div class="absolute -right-6 -top-12 h-28 w-28 rounded-full bg-emerald-300/20 blur-2xl"></div>
+    <div class="absolute -bottom-14 left-1/3 h-24 w-24 rounded-full bg-white/10 blur-2xl"></div>
+  </div>
+  <div class="flex min-w-0 items-center gap-3">
+    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/30 backdrop-blur-sm"><img src="icon-192.png" alt="" class="h-6 w-6 rounded-md"></span>
+    <div class="min-w-0 leading-tight">
+      <h1 class="truncate text-[15px] font-extrabold tracking-tight">Rekap Nilai Wali Kelas</h1>
+      <p class="truncate text-[11px] font-medium text-emerald-100/80">Rekapitulasi nilai &amp; predikat santri</p>
+    </div>
   </div>
   <div class="relative">
-    <button id="mBtn" aria-haspopup="menu" aria-expanded="false" class="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1.5 text-sm font-semibold ring-1 ring-white/25 transition-colors hover:bg-white/20">
+    <button id="mBtn" aria-haspopup="menu" aria-expanded="false" class="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 text-sm font-semibold ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300">
       Menu
       <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
     </button>
@@ -162,8 +162,8 @@ const TH='sticky border-b border-r border-slate-200 px-2 py-1.5 font-semibold ',
   H2V='sticky top-[28px] z-20 w-[44px] min-w-[44px] border-b border-r border-slate-200 bg-slate-100 px-0 py-2 font-semibold text-slate-700',
   BD='border-b border-r border-slate-100 group-hover:bg-emerald-50 ',
   DC=BD+'whitespace-nowrap px-2 text-center tabular-nums',
-  INP='w-full min-w-[44px] bg-transparent px-1 py-1.5 text-center outline-none focus:bg-amber-50 focus:ring-2 focus:ring-inset focus:ring-emerald-500',
-  NM='nm w-full min-w-[170px] sm:min-w-[240px] bg-transparent py-1.5 pl-2.5 pr-1 text-left outline-none focus:bg-amber-50 focus:ring-2 focus:ring-inset focus:ring-emerald-500';
+  INP='w-full min-w-[44px] bg-transparent px-1 py-1.5 text-center outline-none focus:bg-amber-50 focus:ring-2 focus:ring-inset focus:ring-emerald-500 data-[sel]:!bg-emerald-100 data-[sel]:ring-1 data-[sel]:ring-inset data-[sel]:ring-emerald-400',
+  NM='nm w-full min-w-[170px] sm:min-w-[240px] bg-transparent py-1.5 pl-2.5 pr-1 text-left outline-none focus:bg-amber-50 focus:ring-2 focus:ring-inset focus:ring-emerald-500 data-[sel]:!bg-emerald-100 data-[sel]:ring-1 data-[sel]:ring-inset data-[sel]:ring-emerald-400';
 const cvx=document.createElement('canvas').getContext('2d');
 function fitName(inp){
   inp.style.fontSize='';
@@ -184,13 +184,13 @@ function render(){
     $('#tb').innerHTML=`<tbody><tr><td class="px-6 py-14 text-center text-slate-500"><div class="mb-1 text-base font-bold text-slate-800">Rekap masih kosong</div>Isi kelas, mata pelajaran, dan daftar siswa di pengaturan.<br><button class="btn btn-pri mt-4" onclick="openSet()">Buka pengaturan</button></td></tr></tbody>`;
     return;
   }
-  let h=`<thead><tr><th rowspan="2" class="${TH}left-0 top-0 z-30 w-[32px] bg-slate-100 text-slate-700">No</th><th rowspan="2" class="${TH}s2 left-[32px] top-0 z-30 bg-slate-100 text-left text-slate-700">Nama</th>`;
+  let h=`<thead><tr><th rowspan="2" class="${TH}left-0 top-0 z-30 w-[32px] bg-slate-100 text-slate-700">No</th><th rowspan="2" class="${TH}shadow-[2px_0_0_#e2e8f0] left-[32px] top-0 z-30 bg-slate-100 text-left text-slate-700">Nama</th>`;
   if(n)h+=`<th colspan="${n}" class="${HG}">Mata Pelajaran</th>`;
   h+=`<th rowspan="2" class="${H1}">Jumlah</th><th rowspan="2" class="${H1}">Rata-Rata</th><th rowspan="2" class="${H1}">Suluk</th><th colspan="3" class="${HG}">Prestasi</th><th colspan="3" class="${HG}">Ketidak Hadiran</th><th rowspan="2" class="${H1}"></th></tr><tr>`;
-  h+=S.mapel.map((m,i)=>`<th class="${H2V}" title="${i?'':'Kunci penentu predikat: '}${esc(m.nama)}"><span class="vt">${esc(m.nama)}</span></th>`).join('');
+  h+=S.mapel.map((m,i)=>`<th class="${H2V}" title="${i?'':'Kunci penentu predikat: '}${esc(m.nama)}"><span class="inline-block whitespace-nowrap leading-tight [writing-mode:vertical-rl] rotate-180">${esc(m.nama)}</span></th>`).join('');
   h+=['Ranking','Predikat','Nilai Merah','Alpa','Ijin','Sakit'].map(x=>`<th class="${H2}">${x}</th>`).join('')+'</tr></thead><tbody>';
   S.siswa.forEach((s,i)=>{
-    h+=`<tr data-i="${i}" class="group"><td class="${BD}sticky left-[0] z-10 bg-white text-center text-slate-400">${i+1}</td><td class="${BD}s2 sticky left-[32px] z-10 bg-white"><input class="${NM}" data-f="nama" value="${esc(s.nama)}" placeholder="Nama siswa" enterkeyhint="next"></td>`;
+    h+=`<tr data-i="${i}" class="group"><td class="${BD}sticky left-[0] z-10 bg-white text-center text-slate-400">${i+1}</td><td class="${BD}shadow-[2px_0_0_#e2e8f0] sticky left-[32px] z-10 bg-white"><input class="${NM}" data-f="nama" value="${esc(s.nama)}" placeholder="Nama siswa" enterkeyhint="next"></td>`;
     S.mapel.forEach(m=>{h+=`<td class="${BD}"><input class="g ${INP}" data-f="n:${m.id}" inputmode="decimal" value="${esc(s.n[m.id])}"></td>`});
     h+=`<td class="${DC}" data-c="jum"></td><td class="${DC}" data-c="avg"></td><td class="${BD}"><input class="g ${INP}" data-f="suluk" value="${esc(s.suluk)}"></td>`;
     h+=`<td class="${DC}" data-c="rank"></td><td class="${DC}" data-c="pred"></td><td class="${DC}" data-c="merah"></td>`;
@@ -199,7 +199,7 @@ function render(){
   });
   h+='</tbody><tfoot>';
   [['Jumlah','sum'],['Rata-Rata','avg'],['Nilai Tertinggi','max'],['Nilai Terendah','min']].forEach(([l,k])=>{
-    h+=`<tr><th colspan="2" class="s2 sticky left-0 z-10 border-b border-r border-slate-200 bg-slate-50 px-3 py-1.5 text-left font-semibold text-slate-600">${l}</th>`+S.mapel.map(m=>`<td data-k="${k}" data-m="${m.id}" class="border-b border-r border-slate-200 bg-slate-50 px-2 py-1.5 text-center font-semibold tabular-nums"></td>`).join('')+'<td colspan="10" class="border-b border-slate-200 bg-slate-50"></td></tr>';
+    h+=`<tr><th colspan="2" class="shadow-[2px_0_0_#e2e8f0] sticky left-0 z-10 border-b border-r border-slate-200 bg-slate-50 px-3 py-1.5 text-left font-semibold text-slate-600">${l}</th>`+S.mapel.map(m=>`<td data-k="${k}" data-m="${m.id}" class="border-b border-r border-slate-200 bg-slate-50 px-2 py-1.5 text-center font-semibold tabular-nums"></td>`).join('')+'<td colspan="10" class="border-b border-slate-200 bg-slate-50"></td></tr>';
   });
   $('#tb').innerHTML=h+'</tfoot>';
   $('#tb').querySelectorAll('input.g').forEach(mark);
