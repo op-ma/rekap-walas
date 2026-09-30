@@ -88,7 +88,7 @@
     <label class="lbl">Kelas<input id="iKls" class="fld" placeholder="mis. 8A"></label>
     <label class="lbl">KKM<input id="iKkm" class="fld" type="number" inputmode="numeric" min="0" max="100"></label>
   </div>
-  <label class="lbl">Mata pelajaran lain <small>Al-Qur'an sudah otomatis ada di kolom pertama setelah Nama (kunci penentu predikat), tidak perlu ditulis. Satu per baris, maksimal 16. Nilai tetap aman bila hanya mengganti nama tanpa mengubah jumlah baris.</small><textarea id="iMp" rows="5" class="fld"></textarea></label>
+  <label class="lbl">Mata pelajaran lain <small>Al-Qur'an sudah otomatis ada di kolom pertama setelah Nama (kunci penentu predikat), tidak perlu ditulis. Satu per baris, maksimal 19 (total 20 dengan Al-Qur'an). Nilai tetap aman bila hanya mengganti nama tanpa mengubah jumlah baris.</small><textarea id="iMp" rows="7" class="fld"></textarea></label>
   <label class="lbl">Tempel daftar nama siswa <small>Satu nama per baris, ditambahkan ke daftar yang ada.</small><textarea id="iSw" rows="5" class="fld" placeholder="Aisyah&#10;Maryam"></textarea></label>
   <div class="flex flex-wrap justify-end gap-2 pt-1">
     <button type="button" id="bClr" class="btn btn-dng mr-auto">Kosongkan nilai</button>
@@ -100,7 +100,7 @@
 <div id="toast" class="pointer-events-none fixed bottom-20 left-1/2 z-50 max-w-[90vw] -translate-x-1/2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm text-white opacity-0 shadow-lg transition-opacity"></div>
 
 <script>
-const KEY='rekap_wali_kelas_v1',APP='rekap-wali-kelas',MAXM=17;
+const KEY='rekap_wali_kelas_v1',APP='rekap-wali-kelas',MAXM=20;
 /* Mapel Al-Qur'an ditulis langsung: selalu kolom pertama setelah Nama, kunci penentu predikat */
 const QURAN="Al-Qur'an",QID='quran';
 const fixQ=a=>[{id:a[0]&&a[0].id||QID,nama:QURAN},...a.slice(1)].slice(0,MAXM);
