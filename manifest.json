@@ -1,0 +1,16 @@
+{
+  "name": "Rekap Nilai Wali Kelas",
+  "short_name": "Rekap Nilai",
+  "description": "Rekapitulasi nilai sumatif untuk wali kelas, offline.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f2f5f4",
+  "theme_color": "#064e3b",
+  "lang": "id",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
