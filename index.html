@@ -49,7 +49,8 @@ input[data-sel]{background:#d1fae5!important;box-shadow:inset 0 0 0 1px #34d399}
     </button>
     <div id="menu" role="menu" class="absolute right-0 z-50 mt-2 hidden w-56 rounded-xl bg-white p-1.5 text-sm text-slate-700 shadow-xl ring-1 ring-slate-200">
       <button id="bSet" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Atur kelas &amp; siswa</button>
-      <button id="bXls" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Export Excel</button>
+      <button id="bXls" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Export Excel (lengkap)</button>
+      <button id="bXls2" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Export Excel (nilai mapel saja)</button>
       <div class="my-1 h-px bg-slate-200"></div>
       <button id="bBak" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Backup data</button>
       <button id="bRes" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Restore data</button>
@@ -466,6 +467,20 @@ $('#bXls').onclick=()=>{
   ws['!cols']=[{wch:5},{wch:32},...S.mapel.map(()=>({wch:12})),{wch:9},{wch:10},{wch:8},{wch:9},{wch:14},{wch:12},{wch:7},{wch:7},{wch:7}];
   const wb=E.book_new();E.book_append_sheet(wb,ws,'Rekap');
   XLSX.writeFile(wb,`Rekap_Nilai_${kelasName()}_${stamp()}.xlsx`);
+  toast('File Excel diunduh');
+};
+
+/* ---------- export excel: hanya No, Nama, dan nilai tiap mapel ---------- */
+$('#bXls2').onclick=()=>{
+  if(typeof XLSX==='undefined')return toast('Library Excel belum termuat. Sambungkan internet lalu muat ulang.');
+  if(!S.siswa.length)return toast('Isi daftar siswa dulu');
+  const E=XLSX.utils,p=x=>{const v=num(x);return v==null?'':v};
+  const a=[['No','Nama',...S.mapel.map(m=>m.nama)]];
+  S.siswa.forEach((s,i)=>a.push([i+1,s.nama,...S.mapel.map(m=>p(s.n[m.id]))]));
+  const ws=E.aoa_to_sheet(a);
+  ws['!cols']=[{wch:5},{wch:32},...S.mapel.map(()=>({wch:12}))];
+  const wb=E.book_new();E.book_append_sheet(wb,ws,'Nilai');
+  XLSX.writeFile(wb,`Nilai_Mapel_${kelasName()}_${stamp()}.xlsx`);
   toast('File Excel diunduh');
 };
 
