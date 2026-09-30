@@ -1,4 +1,4 @@
-const C = 'rekap-wk-v1';
+const C = 'rekap-wk-v2';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
   'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
