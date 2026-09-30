@@ -16,6 +16,44 @@
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','"AE AlMohanad"','"Noto Sans Arabic"','ui-sans-serif','system-ui','Segoe UI','sans-serif']}}}}</script>
 <style>
 @font-face{font-family:'AE AlMohanad';src:local('AE AlMohanad'),local('ae_AlMohanad'),local('AlMohanad'),url('fonts/ae_almohanad.ttf') format('truetype');font-display:swap;unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF}
+
+/* ---- lembar cetak A4 (CSS biasa agar hasil cetak konsisten) ---- */
+@page{size:A4 landscape;margin:6mm}
+#prt{display:none;color:#000;background:#fff;font-size:11px;line-height:1.25}
+#prt.m{display:block;position:fixed;left:-99999px;top:0}
+@media print{
+  body>:not(#prt){display:none!important}
+  html,body{height:auto!important;display:block!important;padding:0!important;background:#fff!important}
+  #prt{display:block!important;position:relative;width:285mm;height:195mm;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+#prtIn{position:absolute;left:0;top:0;width:max-content;transform-origin:0 0}
+#prt .row{display:flex;gap:16px;align-items:flex-start}
+#prt .ttl{height:70px;text-align:center;font-weight:700;font-size:12px;white-space:nowrap}
+#prt .ttl div:last-child{margin-top:8px}
+#prt table{border-collapse:collapse}
+#prt .pm th,#prt .pm td{border:1px solid #000;padding:1px 3px;font-size:10.5px;text-align:center;white-space:nowrap}
+#prt .pm th{font-weight:700;vertical-align:middle}
+#prt .pm th.b2{vertical-align:bottom}
+#prt .pm td.nm{text-align:left;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+#prt .pm td.pd{font-size:12px}
+#prt .pm .bt{border-top:2px solid #000}
+#prt .pm .bl{border-left:2px solid #000}
+#prt .pm .br{border-right:2px solid #000}
+#prt .pm .rd{color:#c00;font-weight:700}
+#prt .v{display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);line-height:1.15}
+#prt .pm tr.sep td{background:#444;height:7px;padding:0;border-color:#000}
+#prt .pm tr.ft td.lb{border:0;font-weight:400}
+#prt .pr{width:310px;margin-top:70px;flex:none}
+#prt .pr table{width:100%;table-layout:fixed;margin-bottom:12px}
+#prt .pr th,#prt .pr td{border:1px solid #000;padding:1px 4px;font-size:10.5px;height:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+#prt .pr th.hd{text-align:center;font-weight:700;height:22px}
+#prt .pr th.tall{height:74px}
+#prt .pr .c{text-align:center}
+#prt .pr .ar{text-align:center;font-size:12px}
+#prt .pr .bd{font-weight:700}
+#prt .pr .red{color:#c00;font-weight:700}
+#prt .pr .sh th{font-weight:700;text-align:center}
+#prt .pr td.wr{white-space:normal}
 </style>
 <style type="text/tailwindcss">
 @layer components{
@@ -49,6 +87,7 @@
     </button>
     <div id="menu" role="menu" class="absolute right-0 z-50 mt-2 hidden w-56 rounded-xl bg-white p-1.5 text-sm text-slate-700 shadow-xl ring-1 ring-slate-200">
       <button id="bSet" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Atur kelas &amp; siswa</button>
+      <button id="bPdf" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Cetak PDF (A4)</button>
       <button id="bXls" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Export Excel (lengkap)</button>
       <button id="bXls2" role="menuitem" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100">Export Excel (nilai mapel saja)</button>
       <div class="my-1 h-px bg-slate-200"></div>
@@ -97,6 +136,7 @@
   </div>
 </form>
 </dialog>
+<div id="prt" aria-hidden="true"></div>
 <div id="toast" class="pointer-events-none fixed bottom-20 left-1/2 z-50 max-w-[90vw] -translate-x-1/2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm text-white opacity-0 shadow-lg transition-opacity"></div>
 
 <script>
@@ -494,6 +534,60 @@ $('#bXls2').onclick=()=>{
   XLSX.writeFile(wb,`Nilai_Mapel_${kelasName()}_${stamp()}.xlsx`);
   toast('File Excel diunduh');
 };
+
+/* ---------- cetak PDF: 1 halaman A4 landscape ---------- */
+async function printPdf(){
+  const n=S.mapel.length;
+  if(!n||!S.siswa.length)return toast('Isi mata pelajaran dan siswa dulu');
+  const {rows,cols,kkm}=compute(),M=S.meta,MM=96/25.4;
+  const f2=v=>v==null?'':(Math.round(v*100)/100).toFixed(2).replace('.',','),
+    V=x=>`<span class="v">${x}</span>`,
+    byNama=(a,b)=>a.s.nama.localeCompare(b.s.nama),
+    ps=S.siswa.map((s,i)=>({s,r:rows[i]}));
+  /* tabel utama */
+  let t=`<div class="ttl"><div>${esc(M.judul)}</div><div>${esc(M.lembaga)}</div><div>${esc(M.tahun)}</div><div>Kelas : ${esc(M.kelas||'-')}</div></div>`;
+  t+=`<table class="pm"><thead><tr><th rowspan="2" class="bt bl">No</th><th rowspan="2" class="bt">Nama</th><th colspan="${n}" class="bt bl">Mata Pelajaran</th><th rowspan="2" class="bt bl">${V('Jumlah')}</th><th rowspan="2" class="bt">${V('Rata-Rata')}</th><th rowspan="2" class="bt">${V('Suluk')}</th><th colspan="3" class="bt bl">Prestasi</th><th colspan="3" class="bt bl br">Ketidak Hadiran</th></tr><tr>`;
+  t+=S.mapel.map((m,i)=>`<th class="b2${i?'':' bl'}">${V(esc(m.nama))}</th>`).join('');
+  t+=`<th class="b2 bl">${V('Ranking')}</th><th class="b2">${V('Predikat')}</th><th class="b2">${V('Nilai Merah')}</th><th class="b2 bl">${V('Alpa')}</th><th class="b2">${V('Ijin')}</th><th class="b2 br">${V('Sakit')}</th></tr></thead><tbody>`;
+  ps.forEach(({s,r},i)=>{
+    t+=`<tr><td class="bl">${i+1}</td><td class="nm">${esc(s.nama)}</td>`
+      +S.mapel.map((m,k)=>{const v=num(s.n[m.id]);return `<td class="${k?'':'bl'}${v!=null&&v<kkm?' rd':''}">${v==null?'':fmt(v)}</td>`}).join('')
+      +`<td class="bl">${r.jum==null?'':fmt(r.jum)}</td><td>${f2(r.avg)}</td><td>${esc(s.suluk)}</td><td class="bl">${r.rank==null?'':r.rank}</td><td class="pd">${r.pred||''}</td><td>${r.has?r.merah:''}</td><td class="bl">${esc(s.alpa)}</td><td>${esc(s.ijin)}</td><td class="br">${esc(s.sakit)}</td></tr>`;
+  });
+  t+=`<tr class="sep"><td colspan="${n+11}"></td></tr>`;
+  [['Jumlah','sum',fmt],['Rata-Rata','avg',f2],['Nilai Tertinggi','max',fmt],['Nilai Terendah','min',fmt],['Rekap Nilai Merah','merah',v=>String(v)]]
+    .forEach(([l,k,fn])=>{t+=`<tr class="ft"><td colspan="2" class="lb">${l}</td>`+cols.map(c=>`<td>${c[k]==null?'':fn(c[k])}</td>`).join('')+`<td colspan="9" class="lb"></td></tr>`});
+  t+='</tbody></table>';
+  /* panel kanan */
+  const PL=[['ممتاز','Mumtaz'],['جيد جدا','Jayyid Jiddan'],['جيد','Jayyid'],['مقبول','Maqbul'],['راسب','Rosib']],
+    pc={};rows.forEach(r=>{if(r.pred)pc[r.pred]=(pc[r.pred]||0)+1});
+  const rm=rows.filter(r=>r.has&&r.merah>MERAH_MAX).length;
+  let pr=`<div class="pr"><table><colgroup><col style="width:50%"><col style="width:28%"><col style="width:22%"></colgroup><tr><th colspan="3" class="hd tall">REKAP PRESTASI KELAS</th></tr>`
+    +PL.map(([a,l])=>`<tr><td>${l}</td><td class="ar">${a}</td><td class="c">${pc[a]||0}</td></tr>`).join('')
+    +`<tr><td colspan="2" class="bd">Jumlah Santri</td><td class="c bd">${S.siswa.length}</td></tr></table>`;
+  pr+=`<table><colgroup><col style="width:78%"><col style="width:22%"></colgroup><tr><th colspan="2" class="hd red">ROSIB NILAI MERAH</th></tr><tr><td class="red">Rosib</td><td class="c red">${rm}</td></tr></table>`;
+  const jr=[1,2,3].flatMap(k=>{const l=ps.filter(x=>x.r.rank===k&&x.r.avg!=null).sort(byNama);return l.length?l.map(x=>[esc(x.s.nama),k,f2(x.r.avg),x.r.pred||'']):[['',k,'','']]});
+  pr+=`<table><colgroup><col style="width:38%"><col style="width:15%"><col style="width:19%"><col style="width:28%"></colgroup><tr><th colspan="4" class="hd">REKAP JUARA KELAS</th></tr><tr class="sh"><th>Nama</th><th>Rank</th><th>Rt2</th><th>Predikat</th></tr>`
+    +jr.map(([a,b,c,d])=>`<tr><td>${a}</td><td class="c bd">${b}</td><td class="c">${c}</td><td class="ar">${d}</td></tr>`).join('')+'</table>';
+  const why=(s,r)=>{const q=num(s.n[S.mapel[0].id]),w=[];if(q!=null&&q<PRED_MIN)w.push(S.mapel[0].nama);if(r.merah>MERAH_MAX)w.push('Merah '+r.merah);if(r.avg!=null&&r.avg<PRED_MIN)w.push('Rata-rata');return w.join(', ')};
+  const ros=ps.filter(x=>x.r.pred==='راسب').sort(byNama).map(x=>[esc(x.s.nama),f2(x.r.avg),esc(why(x.s,x.r))]);
+  while(ros.length<6)ros.push(['','','']);
+  pr+=`<table><colgroup><col style="width:42%"><col style="width:18%"><col style="width:40%"></colgroup><tr><th colspan="3" class="hd">REKAP ROSIB</th></tr><tr class="sh"><th>Nama</th><th>Rt2</th><th>Ket</th></tr>`
+    +ros.map(([a,b,c])=>`<tr><td>${a}</td><td class="c">${b}</td><td class="wr">${c}</td></tr>`).join('')+'</table></div>';
+  /* susun, ukur, skala agar pas 1 halaman */
+  const P=$('#prt');
+  P.innerHTML=`<div id="prtIn"><div class="row"><div>${t}</div>${pr}</div></div>`;
+  P.className='m';
+  try{if(document.fonts&&document.fonts.ready)await document.fonts.ready}catch(e){}
+  const In=$('#prtIn'),aw=285*MM,ah=195*MM,w=In.offsetWidth,h=In.offsetHeight;
+  const k=w&&h?Math.min(aw/w,ah/h,1.4):1;
+  In.style.left=Math.max(0,(aw-w*k)/2)+'px';
+  In.style.transform=`scale(${k})`;
+  P.className='';
+  window.print();
+}
+$('#bPdf').onclick=printPdf;
+addEventListener('afterprint',()=>{$('#prt').innerHTML=''});
 
 /* ---------- PWA ---------- */
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
