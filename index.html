@@ -490,7 +490,7 @@ $('#bXls2').onclick=()=>{
   S.siswa.forEach((s,i)=>a.push([i+1,s.nama,...S.mapel.map(m=>p(s.n[m.id]))]));
   const ws=E.aoa_to_sheet(a);
   ws['!cols']=[{wch:5},{wch:32},...S.mapel.map(()=>({wch:12}))];
-  const wb=E.book_new();E.book_append_sheet(wb,ws,'Nilai');
+  const wb=E.book_new();E.book_append_sheet(wb,ws,(S.meta.kelas||'').replace(/[\\\/?*\[\]:]/g,'').trim().slice(0,31)||'Nilai');
   XLSX.writeFile(wb,`Nilai_Mapel_${kelasName()}_${stamp()}.xlsx`);
   toast('File Excel diunduh');
 };
